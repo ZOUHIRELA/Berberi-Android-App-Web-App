@@ -24,7 +24,7 @@ Berberi est une plateforme de gestion dédiée aux professionnels de la beauté 
 
 1. Clonez le dépôt :
    \`\`\`bash
-   git clone https://github.com/votre-utilisateur/berberi.git
+   git clone https://github.com/ZOUHIRELA/berberi.git
    \`\`\`
 2. Accédez au répertoire du projet :
    \`\`\`bash
@@ -104,6 +104,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 ## Contact
 
-Pour toute question, veuillez contacter votre-email@example.com.
+Pour toute question, veuillez contacter zouhir.mpi.isitd@gmail.com.
 
 Merci d'utiliser Berberi!" > README.md
