@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo_db_security
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+
+    database: postgresql
+
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: zouhir.mpi.isitd@gmail.com
+    password: pvsa eqmu hmfz xczj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 404693944483-jolrb8jb9l3a0i175am6648pg5g0taoh.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: "http://localhost:8080/api/v1/profile"
+            client-name: Google
+          facebook:
+            client-id: 949830193289699
+            client-secret: 06de1c2d8ca5a603e35947114e48cadb
+            redirect-uri: "http://localhost:8080/api/v1/profile"
+            client-name: Facebook
+          github:
+            client-id: Iv23liUNekRRv6ZDuHRn
+            client-secret: 973472a8adc12c39456b79254031c3c3c073e764
+            redirect-uri: "http://localhost:8080/api/v1/profile"
+            client-name: GitHub
