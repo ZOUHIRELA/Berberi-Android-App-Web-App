@@ -1,4 +1,4 @@
-#### Berberi
+## Berberi
 
 Berberi est une plateforme de gestion dédiée aux professionnels de la beauté et du bien-être, inspirée de Fresha. Cette application permet la prise de rendez-vous en ligne, la gestion des paiements, des outils de marketing, et bien plus encore.
 
