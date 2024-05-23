@@ -30,7 +30,7 @@ public class UserProfileService {
     }
 
     // Request to update the user's profile
-    public String requestProfileUpdate(String currentEmail, String newEmail, String fullName, String phoneNumber, MultipartFile profilePicture) {
+    public String requestProfileUpdate(String currentEmail, String newEmail, String fullName, String phoneNumber, MultipartFile profilePicture) throws IOException {
         Optional<User> optionalUser = userRepository.findByEmail(currentEmail);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
@@ -50,7 +50,6 @@ public class UserProfileService {
             throw new RuntimeException("User not found.");
         }
     }
-
     // Confirm the profile update
     public String confirmProfileUpdate(String email, String code) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -63,11 +62,7 @@ public class UserProfileService {
                 user.setFullName(tempUpdate.getFullName());
                 user.setPhoneNumber(tempUpdate.getPhoneNumber());
                 if (tempUpdate.getPhoto() != null) {
-                    try {
-                        user.setProfilePicture(tempUpdate.getPhoto().getBytes());
-                    } catch (IOException e) {
-                        throw new RuntimeException("Failed to update photo.", e);
-                    }
+                    user.setProfilePicture(tempUpdate.getPhoto()); // Set byte[] directly
                 }
 
                 user.setVerificationCode(null);
@@ -84,7 +79,6 @@ public class UserProfileService {
             throw new RuntimeException("User not found.");
         }
     }
-
     // Cancel the profile update
     public void cancelProfileUpdate(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
