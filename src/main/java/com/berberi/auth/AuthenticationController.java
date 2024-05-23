@@ -11,25 +11,28 @@ public class AuthenticationController {
 
     private final AuthenticationService service;
 
-
-
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
         service.sendVerificationCode(email);
         return ResponseEntity.ok("Verification code sent to email.");
     }
 
-
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam String email, @RequestParam String newPassword, @RequestParam String confirmPassword) {
+    public ResponseEntity<String> resetPassword(@RequestParam String email,
+                                                @RequestParam String newPassword,
+                                                @RequestParam String confirmPassword,
+                                                @RequestParam String verificationCode) {
         if (!newPassword.equals(confirmPassword)) {
-            return ResponseEntity.badRequest().body("Passwords do not match.");
+            return ResponseEntity.badRequest().body("Les mots de passe ne correspondent pas.");
+        }
+        boolean isCodeValid = service.verifyCode(email, verificationCode);
+        if (!isCodeValid) {
+            return ResponseEntity.badRequest().body("Code de vérification incorrect ou expiré.");
         }
         service.resetPassword(email, newPassword);
-        return ResponseEntity.ok("Password reset successfully.");
+
+        return ResponseEntity.ok("Mot de passe réinitialisé avec succès.");
     }
-
-
 
 
     @PostMapping("/verify-code")

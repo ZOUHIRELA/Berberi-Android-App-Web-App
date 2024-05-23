@@ -1,13 +1,12 @@
 package com.berberi.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -25,15 +24,19 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Integer id;
 
+    @NonNull
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @NonNull
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @NonNull
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @NonNull
     @Column(name = "password", nullable = false)
     private String password;
 
@@ -49,7 +52,14 @@ public class User implements UserDetails {
     private Date verificationCodeGeneratedTime;
 
     @Column(name = "verified")
-    private boolean verified; // Nouvel attribut pour indiquer si l'utilisateur est vérifié
+    private boolean verified;
+
+    @Transient
+    private MultipartFile profilePictureFile;
+
+    @Lob
+    @Column(name = "profile_picture")
+    private byte[] profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -85,5 +95,4 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
-
 }
