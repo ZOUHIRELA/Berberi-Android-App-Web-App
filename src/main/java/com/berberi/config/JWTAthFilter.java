@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -50,18 +51,24 @@ public class JWTAthFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails) && !isTokenExpired(jwt)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
                 logger.debug("JWT token is valid, authentication set for user: " + userEmail);
             } else {
-                logger.debug("JWT token is invalid for user: " + userEmail);
+                logger.debug("JWT token is invalid or expired for user: " + userEmail);
             }
         } else {
             logger.debug("User is already authenticated or username is null");
         }
+
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isTokenExpired(String token) {
+        final Date expiration = jwtService.extractExpiration(token);
+        return expiration.before(new Date());
     }
 }

@@ -15,7 +15,11 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.endpoint.*;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AccessTokenResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
+import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,25 +76,6 @@ public class OAuth2TokenService {
         }
     }
 
-    @Transactional
-    public void processGithubOAuth2Token(String code) {
-        OAuth2AccessToken accessToken = getOAuth2AccessToken("github", code);
-        OAuth2User oAuth2User = getOAuth2User("github", accessToken);
-
-        String email = oAuth2User.getAttribute("email");
-        Optional<User> existingUser = userRepository.findByEmail(email);
-
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            updateUserFromOAuth2User(user, oAuth2User);
-            userRepository.save(user);
-        } else {
-            User newUser = createUserFromOAuth2User(oAuth2User);
-            userRepository.save(newUser);
-            sendVerificationCode(newUser.getEmail(), newUser.getVerificationCode());
-        }
-    }
-
     private OAuth2AccessToken getOAuth2AccessToken(String registrationId, String code) {
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(registrationId);
 
@@ -122,7 +107,7 @@ public class OAuth2TokenService {
         return response.getBody().getAccessToken();
     }
 
-    private OAuth2User getOAuth2User(String registrationId, OAuth2AccessToken accessToken) {
+    public OAuth2User getOAuth2User(String registrationId, OAuth2AccessToken accessToken) {
         ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId(registrationId);
         OAuth2UserRequest userRequest = new OAuth2UserRequest(clientRegistration, accessToken);
         return oAuth2UserService.loadUser(userRequest);

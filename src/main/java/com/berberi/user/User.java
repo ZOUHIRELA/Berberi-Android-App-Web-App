@@ -24,6 +24,7 @@ public class User implements UserDetails {
     @Column(name = "id")
     private Integer id;
 
+
     @NonNull
     @Column(name = "full_name", nullable = false)
     private String fullName;
@@ -54,12 +55,8 @@ public class User implements UserDetails {
     @Column(name = "verified")
     private boolean verified;
 
-    @Transient
-    private MultipartFile profilePictureFile;
-
-    @Lob
-    @Column(name = "profile_picture")
-    private byte[] profilePicture;
+    @Column(name = "profile_picture", unique = true)
+    private String profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -25,7 +25,6 @@ public class AuthenticationService {
     private final EmailService emailService;
     private final OAuth2TokenService oauth2TokenService;
 
-    // Handle OAuth2 authentication codes
     public void handleGoogleOAuth2Code(String code) {
         oauth2TokenService.processGoogleOAuth2Token(code);
     }
@@ -34,22 +33,16 @@ public class AuthenticationService {
         oauth2TokenService.processFacebookOAuth2Token(code);
     }
 
-    public void handleGithubOAuth2Code(String code) {
-        oauth2TokenService.processGithubOAuth2Token(code);
-    }
-
-    // Generate a random verification code
     private String generateVerificationCode() {
         Random random = new Random();
         int code = 1000 + random.nextInt(9000);
         return String.valueOf(code);
     }
 
-    // Register a new user
     public AuthenticationResponse register(RegisterRequest request) {
         String verificationCode = generateVerificationCode();
 
-        var user = User.builder()
+        User user = User.builder()
                 .fullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
                 .email(request.getEmail())
@@ -70,7 +63,6 @@ public class AuthenticationService {
                 .build();
     }
 
-    // Verify the code provided by the user
     public boolean verifyCode(String email, String code) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -87,15 +79,12 @@ public class AuthenticationService {
         return false;
     }
 
-
-    // Check if the verification code is still valid (15 minutes validity)
     private boolean isCodeValid(Date codeGeneratedTime) {
         long currentTime = System.currentTimeMillis();
         long codeGeneratedMillis = codeGeneratedTime.getTime();
         return (currentTime - codeGeneratedMillis) <= (15 * 60 * 1000);
     }
 
-    // Authenticate the user
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -103,15 +92,14 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
     }
 
-    // Send a new verification code
     public void sendVerificationCode(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -124,13 +112,12 @@ public class AuthenticationService {
         }
     }
 
-    // Reset the user's password
     public void resetPassword(String email, String newPassword) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setPassword(passwordEncoder.encode(newPassword));
-            user.setVerificationCode(null);  // Invalidate the code after resetting the password
+            user.setVerificationCode(null);
             user.setVerificationCodeGeneratedTime(null);
             userRepository.save(user);
         }

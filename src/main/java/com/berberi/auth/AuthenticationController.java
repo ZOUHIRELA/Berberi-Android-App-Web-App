@@ -2,6 +2,7 @@ package com.berberi.auth;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,7 +35,6 @@ public class AuthenticationController {
         return ResponseEntity.ok("Mot de passe réinitialisé avec succès.");
     }
 
-
     @PostMapping("/verify-code")
     public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
         if (service.verifyCode(email, code)) {
@@ -54,21 +54,21 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @GetMapping("/oauth2/google")
-    public ResponseEntity<Void> processGoogleOAuth2Code(@RequestParam String code) {
-        service.handleGoogleOAuth2Code(code);
-        return ResponseEntity.ok().build();
-    }
-
     @GetMapping("/oauth2/facebook")
     public ResponseEntity<Void> processFacebookOAuth2Code(@RequestParam String code) {
         service.handleFacebookOAuth2Code(code);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/oauth2/github")
-    public ResponseEntity<Void> processGithubOAuth2Code(@RequestParam String code) {
-        service.handleGithubOAuth2Code(code);
+    @GetMapping("/oauth2/google")
+    public ResponseEntity<Void> processGoogleOAuth2Code(@RequestParam String code) {
+        service.handleGoogleOAuth2Code(code);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok("Logged out successfully.");
     }
 }

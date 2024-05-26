@@ -24,6 +24,12 @@ public class JwtService {
 
     private static final String SECRET_KEY = "4nHOtf1ygsMWANDfiEZQU3pJV6bsMnbwSnior68RKIc=";
     private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
+    private final Key signingKey;
+
+    public JwtService() {
+        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        this.signingKey = Keys.hmacShaKeyFor(keyBytes);
+    }
 
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
@@ -39,20 +45,21 @@ public class JwtService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        logger.debug("Generating JWT token for user: " + userDetails.getUsername());
+        logger.debug("Generating JWT token for user: {}", userDetails.getUsername());
+        Date expirationDate = new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24); // 24 hours expiration
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
+                .setExpiration(expirationDate)
+                .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        boolean isValid = username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-        logger.debug("JWT token validity for user: " + username + " is " + isValid);
+        boolean isValid = (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        logger.debug("JWT token validity for user: {} is {}", username, isValid);
         return isValid;
     }
 
@@ -60,14 +67,10 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaims(token, Claims::getExpiration);
-    }
-
-    public Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) {
         try {
             return Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+                    .setSigningKey(signingKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -75,5 +78,9 @@ public class JwtService {
             logger.error("Failed to extract claims from JWT", e);
             throw e;
         }
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaims(token, Claims::getExpiration);
     }
 }

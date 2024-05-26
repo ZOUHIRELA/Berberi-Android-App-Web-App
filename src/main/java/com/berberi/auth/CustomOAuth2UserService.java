@@ -35,7 +35,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .email(email)
                     .fullName(oAuth2User.getAttribute("name"))
                     .role(Role.USER)
-                    .verified(true) // L'utilisateur OAuth2 est vérifié par défaut
+                    .verified(true)
                     .build();
             return userRepository.save(newUser);
         });
