@@ -1,8 +1,8 @@
-package com.berberi.auth;
+package com.berberi.services;
 
-import com.berberi.user.Role;
-import com.berberi.user.User;
-import com.berberi.user.UserRepository;
+import com.berberi.model.Role;
+import com.berberi.model.User;
+import com.berberi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

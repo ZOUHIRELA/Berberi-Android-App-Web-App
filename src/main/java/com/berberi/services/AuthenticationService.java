@@ -1,9 +1,13 @@
-package com.berberi.auth;
+package com.berberi.services;
 
+import com.berberi.emails.*;
 import com.berberi.config.JwtService;
-import com.berberi.user.Role;
-import com.berberi.user.User;
-import com.berberi.user.UserRepository;
+import com.berberi.dto.AuthenticationRequest;
+import com.berberi.dto.AuthenticationResponse;
+import com.berberi.dto.RegisterRequest;
+import com.berberi.model.Role;
+import com.berberi.model.User;
+import com.berberi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,20 +1,26 @@
-package com.berberi.auth;
+package com.berberi.controllers;
 
+import com.berberi.dto.AuthenticationRequest;
+import com.berberi.dto.AuthenticationResponse;
+import com.berberi.dto.ServiceProviderRequest;
+import com.berberi.services.ServiceProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/v1/auth")
-@RequiredArgsConstructor
-public class AuthenticationController {
+import java.io.IOException;
 
-    private final AuthenticationService service;
+@RestController
+@RequestMapping("/api/v1/service-provider")
+@RequiredArgsConstructor
+public class ServiceProviderController {
+
+    private final ServiceProviderService serviceProviderService;
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@RequestParam String email) {
-        service.sendVerificationCode(email);
+        serviceProviderService.sendVerificationCode(email);
         return ResponseEntity.ok("Verification code sent to email.");
     }
 
@@ -26,18 +32,17 @@ public class AuthenticationController {
         if (!newPassword.equals(confirmPassword)) {
             return ResponseEntity.badRequest().body("Les mots de passe ne correspondent pas.");
         }
-        boolean isCodeValid = service.verifyCode(email, verificationCode);
+        boolean isCodeValid = serviceProviderService.verifyCode(email, verificationCode);
         if (!isCodeValid) {
             return ResponseEntity.badRequest().body("Code de vérification incorrect ou expiré.");
         }
-        service.resetPassword(email, newPassword);
-
+        serviceProviderService.resetPassword(email, newPassword);
         return ResponseEntity.ok("Mot de passe réinitialisé avec succès.");
     }
 
     @PostMapping("/verify-code")
     public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
-        if (service.verifyCode(email, code)) {
+        if (serviceProviderService.verifyCode(email, code)) {
             return ResponseEntity.ok("Code verified successfully.");
         } else {
             return ResponseEntity.badRequest().body("Invalid verification code or expired.");
@@ -45,24 +50,24 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok(service.register(request));
+    public ResponseEntity<AuthenticationResponse> register(@RequestBody ServiceProviderRequest request) throws IOException {
+        return ResponseEntity.ok(serviceProviderService.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(service.authenticate(request));
+        return ResponseEntity.ok(serviceProviderService.authenticate(request));
     }
 
     @GetMapping("/oauth2/facebook")
     public ResponseEntity<Void> processFacebookOAuth2Code(@RequestParam String code) {
-        service.handleFacebookOAuth2Code(code);
+        serviceProviderService.handleFacebookOAuth2Code(code);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/oauth2/google")
     public ResponseEntity<Void> processGoogleOAuth2Code(@RequestParam String code) {
-        service.handleGoogleOAuth2Code(code);
+        serviceProviderService.handleGoogleOAuth2Code(code);
         return ResponseEntity.ok().build();
     }
 

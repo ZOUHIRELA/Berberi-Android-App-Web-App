@@ -1,4 +1,4 @@
-package com.berberi.auth;
+package com.berberi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

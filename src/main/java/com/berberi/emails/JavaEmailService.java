@@ -1,4 +1,4 @@
-package com.berberi.auth;
+package com.berberi.emails;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

@@ -1,5 +1,6 @@
-package com.berberi.user;
+package com.berberi.repository;
 
+import com.berberi.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

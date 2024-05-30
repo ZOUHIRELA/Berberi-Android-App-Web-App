@@ -15,8 +15,8 @@ spring:
           non_contextual_creation: true
   servlet:
     multipart:
-      max-file-size: 2MB
-      max-request-size: 2MB
+      max-file-size: 30MB
+      max-request-size: 30MB
   mail:
     host: smtp.gmail.com
     port: 587

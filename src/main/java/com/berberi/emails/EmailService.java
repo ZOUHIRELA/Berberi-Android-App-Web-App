@@ -1,4 +1,4 @@
-package com.berberi.auth;
+package com.berberi.emails;
 
 public interface EmailService {
 

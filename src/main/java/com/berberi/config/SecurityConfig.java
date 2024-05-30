@@ -1,6 +1,6 @@
 package com.berberi.config;
 
-import com.berberi.auth.CustomOAuth2UserService;
+import com.berberi.services.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +29,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/v1/auth/**",
-                                "/api/v1/demo-controller"
+                                "/api/v1/demo-controller",
+                                "/api/v1/service-provider/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

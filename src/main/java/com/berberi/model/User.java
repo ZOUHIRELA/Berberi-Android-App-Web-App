@@ -1,11 +1,10 @@
-package com.berberi.user;
+package com.berberi.model;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Date;
@@ -21,9 +20,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
-
 
     @NonNull
     @Column(name = "full_name", nullable = false)
@@ -48,11 +45,11 @@ public class User implements UserDetails {
     @Column(name = "verification_code")
     private String verificationCode;
 
-    @Column(name = "code_generated_time")
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "code_generated_time")
     private Date verificationCodeGeneratedTime;
 
-    @Column(name = "verified")
+    @Column(name = "verified", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean verified;
 
     @Column(name = "profile_picture", unique = true)
@@ -86,10 +83,5 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 }

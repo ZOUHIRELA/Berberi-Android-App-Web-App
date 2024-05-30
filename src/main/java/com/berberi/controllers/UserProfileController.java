@@ -1,9 +1,10 @@
-package com.berberi.profile;
+package com.berberi.controllers;
 
-import com.berberi.auth.OAuth2TokenService;
-import com.berberi.user.Role;
-import com.berberi.user.User;
-import com.berberi.user.UserRepository;
+import com.berberi.services.OAuth2TokenService;
+import com.berberi.model.Role;
+import com.berberi.model.User;
+import com.berberi.services.UserProfileService;
+import com.berberi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
