@@ -1,8 +1,8 @@
 package com.berberi.services;
 
-import com.berberi.dto.AuthenticationRequest;
-import com.berberi.dto.AuthenticationResponse;
-import com.berberi.dto.ServiceProviderRequest;
+import com.berberi.dtos.AuthenticationRequest;
+import com.berberi.dtos.AuthenticationResponse;
+import com.berberi.dtos.ServiceProviderRequest;
 import com.berberi.emails.EmailService;
 import com.berberi.config.JwtService;
 import com.berberi.model.Role;

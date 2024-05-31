@@ -1,13 +1,11 @@
 package com.berberi.controllers;
 
-import com.berberi.dto.AuthenticationRequest;
-import com.berberi.dto.AuthenticationResponse;
-import com.berberi.dto.ServiceProviderRequest;
 import com.berberi.services.ServiceProviderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.berberi.dtos.*;
 
 import java.io.IOException;
 

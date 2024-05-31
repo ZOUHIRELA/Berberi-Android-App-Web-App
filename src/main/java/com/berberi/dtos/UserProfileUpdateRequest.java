@@ -1,4 +1,4 @@
-package com.berberi.dto;
+package com.berberi.dtos;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;

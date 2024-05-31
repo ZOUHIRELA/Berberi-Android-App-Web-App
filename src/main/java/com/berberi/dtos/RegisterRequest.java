@@ -1,4 +1,4 @@
-package com.berberi.dto;
+package com.berberi.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +16,5 @@ public class RegisterRequest {
     private String phoneNumber;
     private String email;
     private String password;
+    private MultipartFile profilePicture; // Ajout de la propriété pour l'image de profil
 }

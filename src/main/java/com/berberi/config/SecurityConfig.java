@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/**",
                                 "/api/v1/demo-controller",
-                                "/api/v1/service-provider/**"
+                                "api/v1/service-provider/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
