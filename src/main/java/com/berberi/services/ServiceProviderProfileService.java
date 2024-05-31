@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +49,7 @@ public class ServiceProviderProfileService {
         if (location != null) serviceProvider.setLocation(location);
         if (profilePicture != null && !profilePicture.isEmpty()) {
             String base64Image = Base64.getEncoder().encodeToString(profilePicture.getBytes());
-            serviceProvider.setProfilePicture(base64Image.getBytes());
+            serviceProvider.setProfilePicture(Arrays.toString(base64Image.getBytes()));
         }
         if (businessName != null) serviceProvider.setBusinessName(businessName);
         if (address != null) serviceProvider.setAddress(address);

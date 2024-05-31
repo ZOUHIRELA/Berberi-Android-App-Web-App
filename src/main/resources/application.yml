@@ -41,3 +41,5 @@ spring:
             client-id: 949830193289699
             client-secret: 06de1c2d8ca5a603e35947114e48cadb
             redirect-uri: "http://localhost:8080/login/oauth2/code/facebook"
+server:
+  port: 7070

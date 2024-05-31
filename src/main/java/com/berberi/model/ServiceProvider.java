@@ -42,9 +42,8 @@ public class ServiceProvider implements UserDetails {
     @Column(name = "location", nullable = false)
     private String location;
 
-    @Lob
     @Column(name = "profile_picture")
-    private byte[] profilePicture;
+    private String profilePicture;
 
     @Column(name = "business_name")
     private String businessName;
@@ -101,6 +100,12 @@ public class ServiceProvider implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceCategory> serviceCategories;
+
+    @OneToMany(mappedBy = "serviceProvider", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceRating> serviceRatings;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

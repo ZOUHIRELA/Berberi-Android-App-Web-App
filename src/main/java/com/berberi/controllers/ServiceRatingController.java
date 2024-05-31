@@ -1,6 +1,8 @@
 package com.berberi.controllers;
 
 import com.berberi.model.ServiceRating;
+import com.berberi.model.User;
+import com.berberi.repository.UserRepository;
 import com.berberi.services.ServiceRatingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/service-ratings")
@@ -18,19 +21,27 @@ import java.util.List;
 public class ServiceRatingController {
 
     private final ServiceRatingService serviceRatingService;
+    private final UserRepository userRepository;
 
     @PostMapping("/rate")
     public ResponseEntity<ServiceRating> rateService(@RequestBody ServiceRating serviceRating) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            serviceRating.setUser(userDetails.getEmail());
-            ServiceRating ratedService = serviceRatingService.createServiceRating(serviceRating);
-            return ResponseEntity.ok(ratedService);
+            Optional<User> user = userRepository.findByEmail(userDetails.getUsername()); // Utilisez getUsername() au lieu de getEmail()
+            if (user.isPresent()) {
+                ServiceRating ratedService = new ServiceRating(serviceRating.getStars(), serviceRating.getComment(), serviceRating.getServiceProvider(), user.get());
+                serviceRatingService.createServiceRating(ratedService);
+                return ResponseEntity.ok(ratedService);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+
+
 
     @GetMapping("/all")
     public ResponseEntity<List<ServiceRating>> getAllRatings() {

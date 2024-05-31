@@ -26,7 +26,6 @@ public class User implements UserDetails {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @NonNull
     @Column(name = "phone_number")
     private String phoneNumber;
 
@@ -52,8 +51,11 @@ public class User implements UserDetails {
     @Column(name = "verified", columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean verified;
 
-    @Column(name = "profile_picture", unique = true)
+    @Column(name = "profile_picture")
     private String profilePicture;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ServiceRating> serviceRatings;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

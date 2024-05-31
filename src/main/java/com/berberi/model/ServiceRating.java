@@ -3,6 +3,8 @@ package com.berberi.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Optional;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -29,4 +31,12 @@ public class ServiceRating {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    public ServiceRating(Integer stars, String comment, ServiceProvider serviceProvider, User user) {
+        this.stars = stars;
+        this.comment = comment;
+        this.serviceProvider = serviceProvider;
+        this.user = user;
+    }
 }

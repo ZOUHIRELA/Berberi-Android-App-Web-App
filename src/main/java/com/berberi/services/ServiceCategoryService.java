@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,7 @@ public class ServiceCategoryService {
         ServiceCategory existingCategory = serviceCategoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Service Category not found."));
         existingCategory.setName(serviceCategory.getName());
+        existingCategory.setPrice(serviceCategory.getPrice());
         existingCategory.setDescription(serviceCategory.getDescription());
         return serviceCategoryRepository.save(existingCategory);
     }
@@ -31,5 +33,9 @@ public class ServiceCategoryService {
 
     public List<ServiceCategory> getAllServiceCategories() {
         return serviceCategoryRepository.findAll();
+    }
+
+    public Optional<ServiceCategory> getServiceCategoryById(int categoryId) {
+        return serviceCategoryRepository.findById(categoryId);
     }
 }
