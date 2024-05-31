@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,24 +25,16 @@ public class ServiceRatingController {
     private final UserRepository userRepository;
 
     @PostMapping("/rate")
-    public ResponseEntity<ServiceRating> rateService(@RequestBody ServiceRating serviceRating) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            Optional<User> user = userRepository.findByEmail(userDetails.getUsername()); // Utilisez getUsername() au lieu de getEmail()
-            if (user.isPresent()) {
-                ServiceRating ratedService = new ServiceRating(serviceRating.getStars(), serviceRating.getComment(), serviceRating.getServiceProvider(), user.get());
-                serviceRatingService.createServiceRating(ratedService);
-                return ResponseEntity.ok(ratedService);
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-            }
+    public ResponseEntity<ServiceRating> rateService(@RequestBody ServiceRating serviceRating,
+                                                     @AuthenticationPrincipal User user) {
+        if (user != null) {
+            serviceRating.setUser(user);
+            ServiceRating ratedService = serviceRatingService.createServiceRating(serviceRating);
+            return ResponseEntity.ok(ratedService);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-
 
     @GetMapping("/all")
     public ResponseEntity<List<ServiceRating>> getAllRatings() {

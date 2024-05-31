@@ -32,7 +32,6 @@ public class ServiceRating {
     @JoinColumn(name = "user_id")
     private User user;
 
-
     public ServiceRating(Integer stars, String comment, ServiceProvider serviceProvider, User user) {
         this.stars = stars;
         this.comment = comment;
