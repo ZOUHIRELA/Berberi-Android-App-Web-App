@@ -102,6 +102,12 @@ public class ServiceProvider implements UserDetails {
     @Column(name = "role", nullable = false)
     private Role role;
 
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

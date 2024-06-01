@@ -6,25 +6,29 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ServiceProviderRepository extends JpaRepository<ServiceProvider, Integer> {
 
-//    @Query("SELECT s FROM ServiceProvider s WHERE (:name IS NULL OR s.fullName LIKE %:name%) " +
-//            "AND (:category IS NULL OR s.category = :category) " +
-//            "AND (:minPrice IS NULL OR s.price >= :minPrice) " +
-//            "AND (:maxPrice IS NULL OR s.price <= :maxPrice) " +
-//            "AND (:minRating IS NULL OR s.rating >= :minRating) " +
-//            "AND (:maxRating IS NULL OR s.rating <= :maxRating)")
-//    List<ServiceProvider> searchServices(@Param("name") String name,
-//                                         @Param("category") String category,
-//                                         @Param("minPrice") BigDecimal minPrice,
-//                                         @Param("maxPrice") BigDecimal maxPrice,
-//                                         @Param("minRating") Integer minRating,
-//                                         @Param("maxRating") Integer maxRating);
+    @Query("SELECT s FROM ServiceProvider s WHERE " +
+            "(:serviceName IS NULL OR s.fullName LIKE %:serviceName%) " +
+            "AND (:location IS NULL OR s.location LIKE %:location%) " +
+            "AND (:address IS NULL OR s.address LIKE %:address%) " +
+            "AND (:category IS NULL OR s.sector = :category) " +
+            "AND (:minPrice IS NULL OR :minPrice <= (SELECT MIN(sc.price) FROM ServiceCategory sc WHERE sc.serviceProvider = s)) " +
+            "AND (:maxPrice IS NULL OR :maxPrice >= (SELECT MAX(sc.price) FROM ServiceCategory sc WHERE sc.serviceProvider = s)) " +
+            "AND (:minRating IS NULL OR :minRating <= (SELECT AVG(sr.stars) FROM ServiceRating sr WHERE sr.serviceProvider = s))")
+    List<ServiceProvider> findByCriteria(
+            @Param("serviceName") String serviceName,
+            @Param("location") String location,
+            @Param("address") String address,
+            @Param("category") String category,
+            @Param("minPrice") Double minPrice,
+            @Param("maxPrice") Double maxPrice,
+            @Param("minRating") Integer minRating
+    );
 
     Optional<ServiceProvider> findByEmail(String email);
 }
